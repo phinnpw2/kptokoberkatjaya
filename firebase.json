@@ -1,0 +1,26 @@
+{
+  "flutter": {
+    "platforms": {
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "kpkasirbj",
+          "configurations": {
+            "web": "1:262782523022:web:880665d6ebea09e4f95bdf",
+            "windows": "1:262782523022:web:038f821ed5caa239f95bdf"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "*/.",
+      "*/node_modules/*"
+    ],
+    "frameworksBackend": {
+      "region": "asia-east1"
+    }
+  }
+}
