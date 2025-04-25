@@ -15,8 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    // Validasi login (misalnya username = 'asiong' dan password = 'asiong')
-    if (username == 'asiong' && password == 'asiong') {
+    // Validasi login (misalnya username = '123' dan password = '123')
+    if (username == '123' && password == '123') {
       // Jika login berhasil, arahkan ke HomeScreen
       Navigator.pushReplacement(
         context,
@@ -36,33 +36,45 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [const Color.fromARGB(255, 176, 185, 202), ],
+            colors: [Colors.blueAccent, Colors.greenAccent], // Gradien serasi untuk seluruh latar belakang
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(20.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // Menambahkan logo atau gambar (opsional)
-                Image.asset(
-                  'assets/logo.png',  // Pastikan menambahkan logo di folder assets
-                  height: 100,
+                // Menampilkan teks welcome
+                Text(
+                  'Toko Berkat Jaya :)',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Aplikasi Kasir dan Stok Produk',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
                 SizedBox(height: 30),
-                
-                // Input Username
+
+                // Input Username dengan logo user di sebelah kiri
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
-                    labelStyle: TextStyle(color: Colors.white),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        'assets/00910720-6d54-4c50-b826-817835a27e0e.png', // Ganti dengan file yang baru Anda unggah
+                        height: 24, // Menyesuaikan ukuran logo
+                      ),
+                    ),
+                    labelText: 'Username', // Ganti label menjadi Username
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.8),
+                    fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -70,43 +82,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.black),
                 ),
                 SizedBox(height: 20),
-                
+
                 // Input Password
                 TextField(
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.lock),
                     labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.8),
+                    fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   style: TextStyle(color: Colors.black),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 20),
 
-                // Tombol Login dengan animasi dan styling lebih elegan
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                  width: 250,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 143, 174, 131),
-                      padding: EdgeInsets.symmetric(vertical: 15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                // Tombol Login
+                ElevatedButton(
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Tombol Login dengan warna hijau
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
-                      'Login',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
+                    minimumSize: Size(250, 50),
+                  ),
+                  child: Text(
+                    'Login Now',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ],
