@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';  // Pastikan path ini benar
+import 'package:hive_flutter/hive_flutter.dart'; // ✅ Import Hive
+import 'screens/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ✅ Wajib sebelum async init
+  await Hive.initFlutter();                 // ✅ Inisialisasi Hive
+  await Hive.openBox('produkBox');          // ✅ Buka box untuk simpan data
+
   runApp(MyApp());
 }
 
@@ -13,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreen(),  // Memastikan LoginScreen muncul pertama kali
+      home: LoginScreen(),
     );
   }
 }

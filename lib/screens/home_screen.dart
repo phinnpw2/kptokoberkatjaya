@@ -30,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ProductDetailScreen(
-         //'Produk A',  // Nama produk yang diteruskan
-          // 10,  // Stok produk yang diteruskan
+          productName: 'Produk A',  // Nama produk yang diteruskan
+          productStock: 10,  // Stok produk yang diteruskan
         ),
       ),
     );
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               onPressed: _onKasirPressed,  // Aksi tombol Kasir
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent, // Warna tombol Kasir
+                backgroundColor: Colors.blueAccent, // Warna tombol Kasir mengikuti tombol Produk
                 minimumSize: Size(200, 50),  // Menentukan ukuran minimal tombol
                 padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
                 shape: RoundedRectangleBorder(

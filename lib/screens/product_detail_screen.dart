@@ -1,179 +1,245 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   final String productName;
   final int productStock;
 
-  // Constructor untuk menerima data produk dari layar sebelumnya
   ProductDetailScreen({required this.productName, required this.productStock});
 
   @override
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  List<Map<String, dynamic>> makananList = [];
+  List<Map<String, dynamic>> minumanList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProdukData();
+  }
+
+  void _loadProdukData() {
+    final box = Hive.box('produkBox');
+    final makananData = box.get('makananList');
+    final minumanData = box.get('minumanList');
+
+    if (makananData != null) {
+      makananList = List<Map<String, dynamic>>.from(
+        (makananData as List).map((e) => Map<String, dynamic>.from(e)),
+      );
+    }
+
+    if (minumanData != null) {
+      minumanList = List<Map<String, dynamic>>.from(
+        (minumanData as List).map((e) => Map<String, dynamic>.from(e)),
+      );
+    }
+
+    setState(() {});
+  }
+
+  void _saveProdukData() {
+    final box = Hive.box('produkBox');
+    box.put('makananList', makananList);
+    box.put('minumanList', minumanList);
+  }
+
+  void _showAddItemDialog(BuildContext context, String kategori) {
+    final TextEditingController _namaController = TextEditingController();
+    final TextEditingController _stokController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Tambah $kategori'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _namaController,
+                decoration: InputDecoration(labelText: 'Nama $kategori'),
+              ),
+              TextField(
+                controller: _stokController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Stok'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String nama = _namaController.text.trim();
+                int stok = int.tryParse(_stokController.text.trim()) ?? 0;
+
+                if (nama.isNotEmpty) {
+                  setState(() {
+                    final newItem = {'nama': nama, 'stok': stok};
+                    if (kategori == 'Makanan') {
+                      makananList.add(newItem);
+                    } else {
+                      minumanList.add(newItem);
+                    }
+                    _saveProdukData();
+                  });
+                }
+                Navigator.pop(context);
+              },
+              child: Text('Tambah'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditItemDialog(BuildContext context, String kategori, int index) {
+    final list = kategori == 'Makanan' ? makananList : minumanList;
+    final TextEditingController _namaController = TextEditingController(text: list[index]['nama']);
+    final TextEditingController _stokController = TextEditingController(text: list[index]['stok'].toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit $kategori'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _namaController,
+                decoration: InputDecoration(labelText: 'Nama $kategori'),
+              ),
+              TextField(
+                controller: _stokController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Stok'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  list[index]['nama'] = _namaController.text.trim();
+                  list[index]['stok'] = int.tryParse(_stokController.text.trim()) ?? list[index]['stok'];
+                  _saveProdukData();
+                });
+                Navigator.pop(context);
+              },
+              child: Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildItemList(List<Map<String, dynamic>> list, String jenis) {
+    return Column(
+      children: List.generate(list.length, (index) {
+        return ListTile(
+          title: Text(list[index]['nama'], style: TextStyle(fontSize: 14)),
+          subtitle: Text('Stok: ${list[index]['stok']}'),
+          trailing: TextButton(
+            onPressed: () => _showEditItemDialog(context, jenis, index),
+            child: Text('Edit Produk', style: TextStyle(fontSize: 18, color: Colors.blue)),
+          ),
+        );
+      }),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Produk'),
       ),
-      body: SingleChildScrollView( // Memungkinkan scroll jika konten lebih panjang dari layar
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            // Menambahkan Row untuk bagian makanan dan minuman
-            // Gunakan MediaQuery untuk mendeteksi layar besar atau kecil
-            if (MediaQuery.of(context).size.width > 600) // Desktop / tablet
-              Row(
+        child: isDesktop
+            ? Row(
                 children: [
-                  // Bagian kiri: Makanan
                   Expanded(
-                    flex: 1,  // Makanan mendapat 1/2 dari ruang yang tersedia
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Makanan',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () => _showAddItemDialog(context, 'Makanan'),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 10),
-                        // Daftar makanan
-                        ListTile(
-                          title: Text(
-                            'Makanan A',
-                            style: TextStyle(fontSize: 14), // Ukuran font lebih kecil
-                          ),
-                          subtitle: Text('Stok: 10'),
-                          trailing: TextButton(
-                            onPressed: () {
-                              // Aksi untuk menambah stok makanan A
-                            },
-                            child: Text('Edit Produk', style: TextStyle(fontSize: 18, color: Colors.blue)),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            'Makanan B',
-                            style: TextStyle(fontSize: 14), // Ukuran font lebih kecil
-                          ),
-                          subtitle: Text('Stok: 8'),
-                          trailing: TextButton(
-                            onPressed: () {
-                              // Aksi untuk menambah stok makanan B
-                            },
-                            child: Text('Edit Produk', style: TextStyle(fontSize: 18, color: Colors.blue)),
-                          ),
-                        ),
+                        _buildItemList(makananList, 'Makanan'),
                       ],
                     ),
                   ),
-                  // Garis pemisah di tengah
-                  VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                    width: 20,
-                  ),
-                  // Bagian kanan: Minuman
+                  VerticalDivider(),
                   Expanded(
-                    flex: 1,  // Minuman mendapat 1/2 dari ruang yang tersedia
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Minuman',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () => _showAddItemDialog(context, 'Minuman'),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 10),
-                        // Daftar minuman
-                        ListTile(
-                          title: Text(
-                            'Minuman A',
-                            style: TextStyle(fontSize: 14), // Ukuran font lebih kecil
-                          ),
-                          subtitle: Text('Stok: 15'),
-                          trailing: TextButton(
-                            onPressed: () {
-                              // Aksi untuk menambah stok minuman A
-                            },
-                            child: Text('Edit Produk', style: TextStyle(fontSize: 18, color: Colors.blue)),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            'Minuman B',
-                            style: TextStyle(fontSize: 14), // Ukuran font lebih kecil
-                          ),
-                          subtitle: Text('Stok: 12'),
-                          trailing: TextButton(
-                            onPressed: () {
-                              // Aksi untuk menambah stok minuman B
-                            },
-                            child: Text('Edit Produk', style: TextStyle(fontSize: 18, color: Colors.blue)),
-                          ),
-                        ),
+                        _buildItemList(minumanList, 'Minuman'),
                       ],
                     ),
                   ),
                 ],
               )
-            else // Mobile, menampilkan bagian makanan dan minuman secara vertikal
-              Column(
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Bagian Makanan
-                  Text(
-                    'Makanan',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () => _showAddItemDialog(context, 'Makanan'),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    title: Text('Makanan A'),
-                    subtitle: Text('Stok: 10'),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        // Aksi untuk menambah stok makanan A
-                      },
-                      child: Text('Tambah Stok'),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text('Makanan B'),
-                    subtitle: Text('Stok: 8'),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        // Aksi untuk menambah stok makanan B
-                      },
-                      child: Text('Tambah Stok'),
-                    ),
-                  ),
+                  _buildItemList(makananList, 'Makanan'),
                   Divider(),
-                  // Bagian Minuman
-                  Text(
-                    'Minuman',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () => _showAddItemDialog(context, 'Minuman'),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    title: Text('Minuman A'),
-                    subtitle: Text('Stok: 15'),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        // Aksi untuk menambah stok minuman A
-                      },
-                      child: Text('Tambah Stok'),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text('Minuman B'),
-                    subtitle: Text('Stok: 12'),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        // Aksi untuk menambah stok minuman B
-                      },
-                      child: Text('Tambah Stok'),
-                    ),
-                  ),
+                  _buildItemList(minumanList, 'Minuman'),
                 ],
               ),
-          ],
-        ),
       ),
     );
   }

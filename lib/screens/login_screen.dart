@@ -48,6 +48,13 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                // Menambahkan logo kecil di atas teks
+                Image.asset(
+                  'assets/4bfa03fc-a6fb-45d5-b976-869885545c30.png', // Pastikan gambar berada di folder assets
+                  height: 50, // Menyesuaikan ukuran logo
+                ),
+                SizedBox(height: 20),
+
                 // Menampilkan teks welcome
                 Text(
                   'Toko Berkat Jaya :)',
@@ -123,4 +130,5 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
+} 
+//tes
