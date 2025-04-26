@@ -15,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    // Validasi login (misalnya username = '123' dan password = '123')
     if (username == '123' && password == '123') {
       // Jika login berhasil, arahkan ke HomeScreen
       Navigator.pushReplacement(
@@ -35,100 +34,102 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent, Colors.greenAccent], // Gradien serasi untuk seluruh latar belakang
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white, // Warna latar belakang putih
         ),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // Menambahkan logo kecil di atas teks
-                Image.asset(
-                  'assets/4bfa03fc-a6fb-45d5-b976-869885545c30.png', // Pastikan gambar berada di folder assets
-                  height: 50, // Menyesuaikan ukuran logo
+        child: Column(
+          children: <Widget>[
+            // Background dengan gambar motif
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/motif.png'), // Pastikan path gambar motif
+                  fit: BoxFit.cover,
                 ),
-                SizedBox(height: 20),
-
-                // Menampilkan teks welcome
-                Text(
-                  'Toko Berkat Jaya :)',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Aplikasi Kasir dan Stok Produk',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                SizedBox(height: 30),
-
-                // Input Username dengan logo user di sebelah kiri
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'assets/00910720-6d54-4c50-b826-817835a27e0e.png', // Ganti dengan file yang baru Anda unggah
-                        height: 24, // Menyesuaikan ukuran logo
-                      ),
-                    ),
-                    labelText: 'Username', // Ganti label menjadi Username
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.black),
-                ),
-                SizedBox(height: 20),
-
-                // Input Password
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock),
-                    labelText: 'Password',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.black),
-                ),
-                SizedBox(height: 20),
-
-                // Tombol Login
-                ElevatedButton(
-                  onPressed: _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Tombol Login dengan warna hijau
-                    padding: EdgeInsets.symmetric(vertical: 15.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: Size(250, 50),
-                  ),
-                  child: Text(
-                    'Login Now',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+              child: Center(
+                child: Text(
+                  'Toko Berkat Jaya',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange.shade300, // Warna oranye
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(height: 20),
+
+            // Form login dengan warna oranye muda
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: Color(0xFFFF7F50), // Warna oranye muda untuk login form
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // Input Username
+                      TextField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          filled: true,
+                          fillColor: Color(0xFFFFE0B2), // Warna peach muda
+                          contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Input Password
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          filled: true,
+                          fillColor: Color(0xFFFFE0B2), // Warna peach muda
+                          contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Tombol Login
+                      ElevatedButton(
+                        onPressed: _login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white, // Tombol Log In putih
+                          padding: EdgeInsets.symmetric(vertical: 15.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          minimumSize: Size(250, 50),
+                        ),
+                        child: Text(
+                          'LOGIN',
+                          style: TextStyle(fontSize: 18, color: Colors.orange.shade500), // Warna oranye
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-} 
-//tes
+}
