@@ -141,6 +141,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               },
               child: Text('Simpan'),
             ),
+            // Tombol Hapus Produk
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  list.removeAt(index); // Menghapus item dari list
+                  _saveProdukData();
+                });
+                Navigator.pop(context);
+              },
+              child: Text('Hapus', style: TextStyle(color: Colors.red)),
+            ),
           ],
         );
       },
@@ -153,9 +164,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         return ListTile(
           title: Text(list[index]['nama'], style: TextStyle(fontSize: 14)),
           subtitle: Text('Stok: ${list[index]['stok']}'),
-          trailing: TextButton(
-            onPressed: () => _showEditItemDialog(context, jenis, index),
-            child: Text('Edit Produk', style: TextStyle(fontSize: 18, color: Colors.blue)),
+          trailing: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Tombol Edit
+              TextButton(
+                onPressed: () => _showEditItemDialog(context, jenis, index),
+                child: Text('Edit', style: TextStyle(fontSize: 12, color: Colors.blue)),
+              ),
+            ],
           ),
         );
       }),
@@ -164,82 +181,43 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 600;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Produk'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: isDesktop
-            ? Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () => _showAddItemDialog(context, 'Makanan'),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        _buildItemList(makananList, 'Makanan'),
-                      ],
-                    ),
-                  ),
-                  VerticalDivider(),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () => _showAddItemDialog(context, 'Minuman'),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        _buildItemList(minumanList, 'Minuman'),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () => _showAddItemDialog(context, 'Makanan'),
-                      ),
-                    ],
-                  ),
-                  _buildItemList(makananList, 'Makanan'),
-                  Divider(),
-                  Row(
-                    children: [
-                      Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () => _showAddItemDialog(context, 'Minuman'),
-                      ),
-                    ],
-                  ),
-                  _buildItemList(minumanList, 'Minuman'),
-                ],
-              ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Bagian Makanan
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,  // Add space between to align to the right
+              children: [
+                Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () => _showAddItemDialog(context, 'Makanan'),
+                ),
+              ],
+            ),
+            _buildItemList(makananList, 'Makanan'),
+            Divider(),
+
+            // Bagian Minuman
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,  // Add space between to align to the right
+              children: [
+                Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () => _showAddItemDialog(context, 'Minuman'),
+                ),
+              ],
+            ),
+            _buildItemList(minumanList, 'Minuman'),
+          ],
+        ),
       ),
     );
   }
