@@ -1,103 +1,186 @@
 import 'package:flutter/material.dart';
+import 'product_detail_screen.dart';  // Pastikan ini sudah ada
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  // Fungsi untuk menangani aksi tombol "Kasir"
-  void _onKasirPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Tombol Kasir Ditekan')),
-    );
-  }
-
-  // Fungsi untuk menangani aksi tombol "Stok Produk"
-  void _onStokProdukPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Tombol Stok Produk Ditekan')),
-    );
-  }
-
-  // Fungsi untuk menangani aksi tombol "Pengaturan"
-  void _onPengaturanPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Tombol Pengaturan Ditekan')),
-    );
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('iamges/bg2.jpg'), // Path gambar background
-            fit: BoxFit.cover,  // Gambar menutupi seluruh area layar
-            opacity: 0.5,  // Mengatur transparansi gambar agar teks lebih mudah dibaca
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'images/bg1.jpg',  // Ganti dengan path gambar latar belakang yang sesuai
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Foto dan nama pengguna
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage('assets/profile.jpg'), // Gambar profil
-            ),
-            SizedBox(height: 10),
-            Text('Bobby', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
-            Text('Owner', style: TextStyle(fontSize: 16, color: Colors.white)),
-
-            // Tombol Kasir
-            ElevatedButton.icon(
-              onPressed: _onKasirPressed,
-              icon: Icon(Icons.money),
-              label: Text('Kasir'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(200, 50),
-                backgroundColor: Colors.blueAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          // Content on top of the background
+          Column(
+            children: [
+              // Header with user info
+              Container(
+                padding: EdgeInsets.all(20),
+                color: Colors.white.withOpacity(0.8),  // Semi-transparent background
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      radius: 30,  // Ukuran avatar
+                      backgroundImage: AssetImage('assets/your_avatar.png'),  // Ganti dengan path gambar avatar
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Bobby',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Owner',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text('Owner'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        backgroundColor: Colors.purple,  // Warna tombol
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-
-            // Tombol Stok Produk
-            ElevatedButton.icon(
-              onPressed: _onStokProdukPressed,
-              icon: Icon(Icons.storage),
-              label: Text('Stok Produk'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(200, 50),
-                backgroundColor: Colors.blueAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+              // Main buttons (Kasir, Stok Produk, Laporan)
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Row untuk tombol utama
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Kasir Button
+                        Padding(
+                          padding: EdgeInsets.all(8.0),  // Menambah jarak sekitar tombol
+                          child: Container(
+                            width: 230,  // Ukuran tombol
+                            height: 150,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,  // Warna tombol
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.payment, size: 40),
+                                  Text('Kasir', style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Stok Produk Button
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 230,  // Ukuran tombol
+                            height: 150,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Navigasi ke ProductDetailScreen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetailScreen(
+                                      productName: 'Produk A',  // Nama produk yang diteruskan
+                                      productStock: 100,        // Jumlah stok produk yang diteruskan
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.inventory, size: 40),
+                                  Text('Stok Produk', style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Laporan Button
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 230,
+                            height: 150,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.bar_chart, size: 40),
+                                  Text('Laporan', style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Tombol Pengaturan yang memanjang ke bawah
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: 720,   // Menambahkan pengaturan ukuran lebar tombol
+                        height: 150,   // Menambahkan pengaturan ukuran tinggi tombol
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 5,
+                          child: InkWell(
+                            onTap: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.settings, size: 30, color: Colors.purple),
+                                SizedBox(width: 10),  // Menambahkan ruang antara ikon dan teks
+                                Text('Pengaturan', style: TextStyle(fontSize: 14, color: Colors.black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-
-            // Tombol Pengaturan
-            ElevatedButton.icon(
-              onPressed: _onPengaturanPressed,
-              icon: Icon(Icons.settings),
-              label: Text('Pengaturan'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
