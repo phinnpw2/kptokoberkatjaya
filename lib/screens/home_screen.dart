@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'popo',
+                          'Owner',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey,
