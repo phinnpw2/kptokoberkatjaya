@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'product_detail_screen.dart'; // Import layar detail produk
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,13 +8,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Fungsi untuk menangani aksi tombol "Produk"
-  void _onProdukPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Tombol Produk Ditekan')),
-    );
-  }
-
   // Fungsi untuk menangani aksi tombol "Kasir"
   void _onKasirPressed() {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -23,64 +15,85 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Fungsi untuk menavigasi ke halaman detail produk
-  void _navigateToProductDetail() {
-    // Menavigasi ke halaman ProductDetailScreen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProductDetailScreen(
-          productName: 'Produk A',  // Nama produk yang diteruskan
-          productStock: 10,  // Stok produk yang diteruskan
-        ),
-      ),
+  // Fungsi untuk menangani aksi tombol "Stok Produk"
+  void _onStokProdukPressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Tombol Stok Produk Ditekan')),
+    );
+  }
+
+  // Fungsi untuk menangani aksi tombol "Pengaturan"
+  void _onPengaturanPressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Tombol Pengaturan Ditekan')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Berkat Jaya'),
-        leading: IconButton(
-          icon: const Icon(Icons.shopping_cart),  // Ikon untuk produk
-          onPressed: _onProdukPressed,  // Fungsi yang dijalankan saat tombol ditekan
-          tooltip: 'Produk',  // Tooltip untuk tombol
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('iamges/bg2.jpg'), // Path gambar background
+            fit: BoxFit.cover,  // Gambar menutupi seluruh area layar
+            opacity: 0.5,  // Mengatur transparansi gambar agar teks lebih mudah dibaca
+          ),
         ),
-      ),
-      body: Center(  // Menggunakan Center untuk menempatkan tombol di tengah
-        child: Column(  // Menambahkan Column untuk menempatkan tombol secara vertikal
-          mainAxisAlignment: MainAxisAlignment.center,  // Memastikan tombol di tengah secara vertikal
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: _onKasirPressed,  // Aksi tombol Kasir
+            // Foto dan nama pengguna
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('assets/profile.jpg'), // Gambar profil
+            ),
+            SizedBox(height: 10),
+            Text('Bobby', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+            Text('Owner', style: TextStyle(fontSize: 16, color: Colors.white)),
+
+            // Tombol Kasir
+            ElevatedButton.icon(
+              onPressed: _onKasirPressed,
+              icon: Icon(Icons.money),
+              label: Text('Kasir'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent, // Warna tombol Kasir mengikuti tombol Produk
-                minimumSize: Size(200, 50),  // Menentukan ukuran minimal tombol
-                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                minimumSize: Size(200, 50),
+                backgroundColor: Colors.blueAccent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Membuat tombol melengkung
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-              child: const Text(
-                'Kasir', // Teks tombol Kasir
-                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
-            const SizedBox(height: 20),  // Jarak antara tombol Kasir dan Produk
-            ElevatedButton(
-              onPressed: _navigateToProductDetail,  // Navigasi ke halaman detail produk
+            SizedBox(height: 20),
+
+            // Tombol Stok Produk
+            ElevatedButton.icon(
+              onPressed: _onStokProdukPressed,
+              icon: Icon(Icons.storage),
+              label: Text('Stok Produk'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent, // Warna tombol Produk
-                minimumSize: Size(200, 50),  // Menentukan ukuran minimal tombol
-                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                minimumSize: Size(200, 50),
+                backgroundColor: Colors.blueAccent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Membuat tombol melengkung
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
-                'Produk', // Teks tombol Produk
-                style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            SizedBox(height: 20),
+
+            // Tombol Pengaturan
+            ElevatedButton.icon(
+              onPressed: _onPengaturanPressed,
+              icon: Icon(Icons.settings),
+              label: Text('Pengaturan'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Colors.orange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
             ),
           ],
