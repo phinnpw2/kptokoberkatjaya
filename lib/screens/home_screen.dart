@@ -9,43 +9,43 @@ class HomeScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return SwippingScreen(
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: EdgeInsets.all(20),
-            color: Colors.white.withOpacity(0.8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/your_avatar.png'),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Bobby', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    Text('Owner', style: TextStyle(fontSize: 16, color: Colors.grey)),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: () {}, // Logic untuk button Owner jika ada
-                  child: Text('Owner'),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    backgroundColor: Colors.purple,
+      child: SingleChildScrollView(  // Menambahkan SingleChildScrollView agar bisa digulir
+        child: Column(
+          children: [
+            // Header
+            Container(
+              padding: EdgeInsets.all(20),
+              color: Colors.white.withOpacity(0.8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage('assets/your_avatar.png'),
                   ),
-                ),
-              ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Bobby', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Text('Owner', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {}, // Logic untuk button Owner jika ada
+                    child: Text('Owner'),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      backgroundColor: Colors.purple,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            SizedBox(height: 20),  // Jarak antar header dan tombol utama
 
-          // Scroll Horizontal Buttons
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Row(
+            // Main buttons (Kasir, Stok Produk, Laporan)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildMainButton(
                   icon: Icons.payment,
@@ -74,38 +74,39 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+            SizedBox(height: 20),  // Jarak antar tombol dan tombol Pengaturan
 
-          // Pengaturan Button
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              width: screenWidth * 0.9,
-              height: 150,
-              child: Card(
-                color: Colors.white,
-                elevation: 5,
-                child: InkWell(
-                  onTap: () {
-                    // Navigasi ke PengaturanScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PengaturanScreen()),
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.settings, size: 30, color: Colors.purple),
-                      SizedBox(width: 10),
-                      Text('Pengaturan', style: TextStyle(fontSize: 14, color: Colors.black)),
-                    ],
+            // Pengaturan Button
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                width: screenWidth * 0.9,
+                height: 150,
+                child: Card(
+                  color: Colors.white,
+                  elevation: 5,
+                  child: InkWell(
+                    onTap: () {
+                      // Navigasi ke PengaturanScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PengaturanScreen()),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.settings, size: 30, color: Colors.purple),
+                        SizedBox(width: 10),
+                        Text('Pengaturan', style: TextStyle(fontSize: 14, color: Colors.black)),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

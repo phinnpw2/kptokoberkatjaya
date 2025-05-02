@@ -14,6 +14,11 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<Map<String, dynamic>> makananList = [];
   List<Map<String, dynamic>> minumanList = [];
+  String _filterKategori = 'Semua'; // Filter kategori
+  String _filterSort = 'Default'; // Filter sorting
+  String _searchQuery = ''; // Tambahan: Query pencarian
+
+  final TextEditingController _searchController = TextEditingController(); // Controller search
 
   @override
   void initState() {
@@ -141,11 +146,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               },
               child: Text('Simpan'),
             ),
-            // Tombol Hapus Produk
             TextButton(
               onPressed: () {
                 setState(() {
-                  list.removeAt(index); // Menghapus item dari list
+                  list.removeAt(index);
                   _saveProdukData();
                 });
                 Navigator.pop(context);
@@ -158,21 +162,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  // Fungsi sortir berdasarkan stok
+  List<Map<String, dynamic>> _getSortedList(List<Map<String, dynamic>> list) {
+    List<Map<String, dynamic>> sortedList = List<Map<String, dynamic>>.from(list);
+    if (_filterSort == 'Stok Terbanyak') {
+      sortedList.sort((a, b) => b['stok'].compareTo(a['stok']));
+    } else if (_filterSort == 'Stok Terdikit') {
+      sortedList.sort((a, b) => a['stok'].compareTo(b['stok']));
+    }
+    return sortedList;
+  }
+
+  // Fungsi untuk search berdasarkan nama produk
+  List<Map<String, dynamic>> _getFilteredList(List<Map<String, dynamic>> list) {
+    List<Map<String, dynamic>> sortedList = _getSortedList(list);
+    if (_searchQuery.isEmpty) return sortedList;
+    return sortedList.where((item) => item['nama'].toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+  }
+
   Widget _buildItemList(List<Map<String, dynamic>> list, String jenis) {
+    List<Map<String, dynamic>> finalList = _getFilteredList(list);
     return Column(
-      children: List.generate(list.length, (index) {
+      children: List.generate(finalList.length, (index) {
         return ListTile(
-          title: Text(list[index]['nama'], style: TextStyle(fontSize: 14)),
-          subtitle: Text('Stok: ${list[index]['stok']}'),
-          trailing: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Tombol Edit
-              TextButton(
-                onPressed: () => _showEditItemDialog(context, jenis, index),
-                child: Text('Edit', style: TextStyle(fontSize: 12, color: Colors.blue)),
-              ),
-            ],
+          title: Text(finalList[index]['nama'], style: TextStyle(fontSize: 14)),
+          subtitle: Text('Stok: ${finalList[index]['stok']}'),
+          trailing: TextButton(
+            onPressed: () => _showEditItemDialog(context, jenis, index),
+            child: Text('Edit', style: TextStyle(fontSize: 12, color: Colors.blue)),
           ),
         );
       }),
@@ -190,32 +207,101 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Bagian Makanan
+            // Row untuk Filter Kategori dan Sort Stok
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,  // Add space between to align to the right
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => _showAddItemDialog(context, 'Makanan'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Filter:', style: TextStyle(fontSize: 16)),
+                    DropdownButton<String>(
+                      value: _filterKategori,
+                      items: ['Semua', 'Makanan', 'Minuman']
+                          .map((kategori) => DropdownMenuItem(
+                                value: kategori,
+                                child: Text(kategori),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _filterKategori = value;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Sort Stok:', style: TextStyle(fontSize: 16)),
+                    DropdownButton<String>(
+                      value: _filterSort,
+                      items: ['Default', 'Stok Terbanyak', 'Stok Terdikit']
+                          .map((sort) => DropdownMenuItem(
+                                value: sort,
+                                child: Text(sort),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _filterSort = value;
+                          });
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
-            _buildItemList(makananList, 'Makanan'),
-            Divider(),
+            SizedBox(height: 16),
 
-            // Bagian Minuman
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,  // Add space between to align to the right
-              children: [
-                Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => _showAddItemDialog(context, 'Minuman'),
-                ),
-              ],
+            // TextField Search Produk
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: 'Cari Produk...',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
             ),
-            _buildItemList(minumanList, 'Minuman'),
+            SizedBox(height: 16),
+
+            if (_filterKategori == 'Semua' || _filterKategori == 'Makanan') ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Makanan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () => _showAddItemDialog(context, 'Makanan'),
+                  ),
+                ],
+              ),
+              _buildItemList(makananList, 'Makanan'),
+              Divider(),
+            ],
+            if (_filterKategori == 'Semua' || _filterKategori == 'Minuman') ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Minuman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () => _showAddItemDialog(context, 'Minuman'),
+                  ),
+                ],
+              ),
+              _buildItemList(minumanList, 'Minuman'),
+            ],
           ],
         ),
       ),
